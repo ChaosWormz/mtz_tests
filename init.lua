@@ -34,3 +34,42 @@ minetest.register_craftitem("mtz_tests:treespawner", {
         end
     end
 })
+
+
+
+--added code for sapling
+
+minetest.register_node("mtz_tests:sapling", {
+	description = "MTZ Sapling",
+	drawtype = "plantlike",
+	visual_scale = 1.0,
+	tiles = {"default_sapling.png"},
+	inventory_image = "default_sapling.png",
+	wield_image = "default_sapling.png",
+	paramtype = "light",
+	walkable = false,
+	is_ground_content = true,
+	selection_box = {
+	type = "fixed",
+	fixed = {-0.3, -0.5, -0.3, 0.3, 0.35, 0.3}
+	},
+	groups = {snappy=2,dig_immediate=3,flammable=2,attached_node=1},
+	sounds = default.node_sound_leaves_defaults(),
+})
+
+--abm
+minetest.register_abm({
+	nodenames = {"mtz_tests:sapling"},
+	interval = 10,
+	chance = 50,
+	action = function(pos, node)
+		local nu =  minetest.get_node({x=pos.x, y=pos.y-1, z=pos.z}).name
+		local is_soil = minetest.get_item_group(nu, "soil")
+		if is_soil == 0 then
+			return
+		end
+		
+		minetest.log("action", "A sapling grows into a tree at "..minetest.pos_to_string(pos))
+minetest.env:spawn_tree(pos, experimental_tree)
+	end
+})
